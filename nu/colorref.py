@@ -7,7 +7,7 @@ examples = ["colorref_largeexample_4_1026", "colorref_largeexample_6_960", "colo
             "cref9vert3comp_10_27", "cref9vert_4_9"]
 
 # example = ["week4/torus24"]
-example = ["colorref_largeexample_4_1026"]
+example = ["colorref_largeexample_4_1026", "colorref_largeexample_6_960"]
 
 final = {}
 results = {}
@@ -56,3 +56,5 @@ def printResults():
 
 if __name__ == "__main__":
     cProfile.run('analyse()')
+    # analyse()
+    # printResults()

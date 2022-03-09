@@ -27,7 +27,7 @@ class Vertex(object):
     except for `__str__`.
     """
 
-    def __init__(self, graph: "Graph", label=None, num: int = 0, rgb: str = None):
+    def __init__(self, graph: "Graph", label=None, num: int = 0, colornum: int = 0):
         """
         Creates a vertex, part of `graph`, with optional label `label`.
         (Labels of different vertices may be chosen the same; this does
@@ -42,7 +42,7 @@ class Vertex(object):
         self._graph = graph
         self.label = label
         self._num = num
-        self._rgb = rgb
+        self._colornum = colornum
         self._incidence = {}
 
     def __repr__(self):
@@ -50,7 +50,7 @@ class Vertex(object):
         A programmer-friendly representation of the vertex.
         :return: The string to approximate the constructor arguments of the `Vertex'
         """
-        return 'Vertex(label={}, colortext={}, #incident={})'.format(self.label, self.colortext, len(self._incidence))
+        return 'Vertex(label={}, colortext={}, #incident={})'.format(self.label, self._colornum, len(self._incidence))
 
     def __str__(self) -> str:
         """
@@ -79,12 +79,12 @@ class Vertex(object):
         self._incidence[other].add(edge)
 
     @property
-    def rgb(self) -> str:
-        return self._rgb
+    def colornum(self) -> int:
+        return self._colornum
 
-    @rgb.setter
-    def rgb(self, rgb: str):
-        self._rgb = rgb
+    @colornum.setter
+    def colornum(self, colornum: int):
+        self._colornum = colornum
 
     @property
     def num(self):
@@ -276,7 +276,7 @@ def toLabels(g: "Graph", ex: str = "null"):
 
 def find_neighs(v: "Vertex", v_old: List[Vertex]):
     neighs = [v_old.neighbours for v_old in v_old if v_old.label is v.label and v_old.num == v.num][0]
-    return tuple(sorted([n.rgb for n in neighs]))
+    return tuple(sorted([n.colornum for n in neighs]))
 
 
 class Graph(object):
@@ -370,15 +370,22 @@ class Graph(object):
         """
         return len(self._v)
 
-    def add_vertex(self, vertex: "Vertex"):
+    def add_vertices(self, vertices: List["Vertex"]):
+        self._v = self._v + vertices
+
+    def add_vertex(self, vertex: "Vertex", disjoint: bool = False):
         """
         Add a vertex to the graph.
+        :param disjoint:
         :param vertex: The vertex to be added.
         """
-        if vertex.graph != self:
+        if vertex.graph != self and not disjoint:
             raise GraphError("A vertex must belong to the graph it is added to")
 
         self._v.append(vertex)
+
+    def add_edges(self, edges: List["Vertex"]):
+        self._e = self._e + edges
 
     def add_edge(self, edge: "Edge"):
         """
@@ -411,8 +418,8 @@ class Graph(object):
         :return: New graph which is a disjoint union of `self' and `other'.
         """
         G = Graph(False)
-        handleGraph(G, createDict(self), 1)
-        handleGraph(G, createDict(other), 2)
+        G.add_vertices(self._v + other.vertices)
+        G.add_edges(self._e + other.edges)
 
         return G
 
@@ -441,21 +448,17 @@ class Graph(object):
             except ValueError:
                 pass
 
-    def del_vertex(self, v: "NUVertex"):
+    def del_vertex(self, v: "Vertex"):
         for n in v.neighbours:
             for e in self.find_edge(v, n):
                 self.del_edge(e)
         self._v.remove(v)
 
-    def find_vertices(self, num: int = 0, rgb: str = None) -> List["Vertex"]:
-        if int == 0 and rgb is None:
-            return self._v
-        elif int == 0:
-            return [v for v in self._v if v.rgb is rgb]
-        elif rgb is None:
-            return [v for v in self._v if v.num == num]
+    def find_vertices(self, g_origin: "Graph", colornum: int = 0) -> List["Vertex"]:
+        if colornum == 0:
+            return g_origin._v
         else:
-            return [v for v in self._v if v.num == num and v.rgb is rgb]
+            return [v for v in self._v if v.graph.__repr__() == g_origin.__repr__() and v.colornum is colornum]
 
     def find_edge(self, u: "Vertex", v: "Vertex") -> Set["Edge"]:
         """

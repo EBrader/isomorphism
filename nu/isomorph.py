@@ -1,5 +1,3 @@
-import numpy as np
-
 from prints import *
 
 color_num = {}  # set([neighs], str_color)
@@ -9,28 +7,28 @@ colors = set()
 count = 0
 
 
-def newColor() -> str:
-    global count
-    first = min(255, count % 255 * 2)
-    second = min(255, count % 255 * 1)
-    third = min(255, count)
-    count += 100
-    return hex(first)[-2::] + hex(second)[-2::] + hex(third)[-2::]
+# def newColor() -> str:
+#     global count
+#     first = min(255, count % 255 * 2)
+#     second = min(255, count % 255 * 1)
+#     third = min(255, count)
+#     count += 100
+#     return hex(first)[-2::] + hex(second)[-2::] + hex(third)[-2::]
 
 
-def randColor() -> str:
-    global colors
-    first = np.random.randint(low=0, high=255 * 3)
-    second = np.random.randint(low=0, high=255 * 3)
-    third = np.random.randint(low=0, high=255 * 3)
-    x = hex(first)[-2::] + hex(second)[-2::] + hex(third)[-2::]
-    while x in colors:
-        first = np.random.randint(low=0, high=255 * 3)
-        second = np.random.randint(low=0, high=255 * 3)
-        third = np.random.randint(low=0, high=255 * 3)
-        x = hex(first)[-2::] + hex(second)[-2::] + hex(third)[-2::]
-    colors.add(x)
-    return x
+# def randColor() -> str:
+#     global colors
+#     first = np.random.randint(low=0, high=255 * 3)
+#     second = np.random.randint(low=0, high=255 * 3)
+#     third = np.random.randint(low=0, high=255 * 3)
+#     x = hex(first)[-2::] + hex(second)[-2::] + hex(third)[-2::]
+#     while x in colors:
+#         first = np.random.randint(low=0, high=255 * 3)
+#         second = np.random.randint(low=0, high=255 * 3)
+#         third = np.random.randint(low=0, high=255 * 3)
+#         x = hex(first)[-2::] + hex(second)[-2::] + hex(third)[-2::]
+#     colors.add(x)
+#     return x
 
 
 def colorNeighs(g_1: "Graph", g_2: "Graph") -> "Graph":
@@ -41,11 +39,11 @@ def colorNeighs(g_1: "Graph", g_2: "Graph") -> "Graph":
     for v in g.vertices:
         neighs = len(v.neighbours)
         if neighs in color_neighs.keys():
-            v.rgb = color_neighs.get(neighs)
+            v.colornum = color_neighs.get(neighs)
         else:
-            ncolor = randColor()
-            color_neighs[neighs] = ncolor
-            v.rgb = ncolor
+            count += 1
+            color_neighs[neighs] = count
+            v.colornum = count
     color_neighs = {}
     return g
 
@@ -53,7 +51,7 @@ def colorNeighs(g_1: "Graph", g_2: "Graph") -> "Graph":
 def tempor(g: "Graph"):
     t = {}
     for v in g.vertices:
-        t[v] = tuple(sorted([n.rgb for n in v.neighbours]))
+        t[v] = tuple(sorted([n.colornum for n in v.neighbours]))
     return t
 
 
@@ -68,32 +66,32 @@ def colorIter(g: "Graph") -> Graph:
         for v in g.vertices:
             neighs = temp.get(v)
             if color_num.get(neighs):
-                v.rgb = color_num.get(neighs)
-            elif v.rgb not in color_num.values():
-                color_num[neighs] = v.rgb
+                v.colornum = color_num.get(neighs)
+            elif v.colornum not in color_num.values():
+                color_num[neighs] = v.colornum
             else:
                 changed = True
-                ncolor = randColor()
-                color_num[neighs] = ncolor
-                v.rgb = ncolor
+                count += 1
+                color_num[neighs] = count
+                v.colornum = count
         color_num = {}
-        dotGraph(g, "isomorph_f")
+    count = 0
+    #       dotGraph(g, "isomorph_f")
     return g
 
 
 def isDiscrete(g: "Graph") -> bool:
     cols = set()
-    verts = g.find_vertices(1)
-    for v in verts:
-        cols.add(v.rgb)
-    return len(cols) == len(verts)
+    for v in g.vertices:
+        cols.add(v.colornum)
+    return len(cols) == len(g.vertices)
 
 
 def isIsomorphic(g_1: "Graph", g_2: "Graph"):
     g = colorIter(colorNeighs(g_1, g_2))
-    g_1_rgb = tuple(sorted([v.rgb for v in g.find_vertices(1)]))
-    g_2_rgb = tuple(sorted([v.rgb for v in g.find_vertices(2)]))
-    result = (g_1_rgb == g_2_rgb, isDiscrete(g))
+    g_1_cnum = tuple(sorted([v.colornum for v in g.find_vertices(g_1)]))
+    g_2_cnum = tuple(sorted([v.colornum for v in g.find_vertices(g_2)]))
+    result = (g_1_cnum == g_2_cnum, isDiscrete(g_1))
     # if result:
     #     print('Graph 1 and 2 are INDEED isomorphic')
     # else:
