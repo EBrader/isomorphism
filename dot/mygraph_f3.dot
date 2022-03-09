@@ -1,0 +1,18 @@
+graph G {
+    0 [penwidth=3,label="v1",fontcolor="Black"]
+    1 [penwidth=3,label="v2",fontcolor="Black"]
+    2 [penwidth=3,label="v3",fontcolor="Black"]
+    3 [penwidth=3,label="v4",fontcolor="Black"]
+    4 [penwidth=3,label="v5",fontcolor="Black"]
+
+    1--0 [penwidth=2,label="None"]
+    2--0 [penwidth=2,label="None"]
+    2--1 [penwidth=2,label="None"]
+    3--0 [penwidth=2,label="None"]
+    3--1 [penwidth=2,label="None"]
+    3--2 [penwidth=2,label="None"]
+    4--0 [penwidth=2,label="None"]
+    4--1 [penwidth=2,label="None"]
+    4--2 [penwidth=2,label="None"]
+    4--3 [penwidth=2,label="None"]
+}
