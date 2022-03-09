@@ -1,4 +1,4 @@
-import time
+import cProfile
 
 from nu.isomorph import *
 
@@ -6,7 +6,8 @@ examples = ["colorref_largeexample_4_1026", "colorref_largeexample_6_960", "colo
             "colorref_smallexample_4_7", "colorref_smallexample_4_16", "colorref_smallexample_6_15",
             "cref9vert3comp_10_27", "cref9vert_4_9"]
 
-example = ["week4/torus24"]
+# example = ["week4/torus24"]
+example = ["colorref_largeexample_4_1026"]
 
 final = {}
 results = {}
@@ -22,19 +23,20 @@ def analyse():
             g.num = counter
             counter += 1
             if not results:
-                results[g] = []
+                results[(g, False)] = []
             else:
                 check = False
                 for k in results.keys():
-                    isIso = isIsomorphic(g, k)
+                    isIso = isIsomorphic(g, k[0])
                     if isIso[0]:
                         check = True
                         results[k] = results.get(k) + [g]
                         if isIso[1]:
-                            results[k] = results.get(k) + ["DISCRETE"]
+                            results[(k[0], True)] = results.get(k)
+                            results.pop(k)
                         break
                 if not check:
-                    results[g] = []
+                    results[(g, False)] = []
         final[file] = results
         results = {}
     return final
@@ -46,13 +48,11 @@ def printResults():
     for f in final.keys():
         print(f'File: {f}')
         for k in final.get(f).keys():
-            print("\t", [k] + [v for v in final.get(f).get(k)])
+            if k[1]:
+                print("\t", [k[0]] + [v for v in final.get(f).get(k)] + ["DISCRETE"])
+            else:
+                print("\t", [k[0]] + [v for v in final.get(f).get(k)])
 
 
 if __name__ == "__main__":
-    start = time.time()
-
-    analyse()
-    printResults()
-
-    print(time.time() - start)
+    cProfile.run('analyse()')

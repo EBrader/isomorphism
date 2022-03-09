@@ -302,8 +302,7 @@ class Graph(object):
         A programmer-friendly representation of the Graph.
         :return: The string to approximate the constructor arguments of the `Graph'
         """
-        return 'Graph(directed={}, simple={}, #edges={n_edges}, #vertices={n_vertices})'.format(
-            self._directed, self._simple, n_edges=len(self._e), n_vertices=len(self._v))
+        return f'Graph #{self._num}'
 
     def __str__(self) -> str:
         """
