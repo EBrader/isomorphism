@@ -87,13 +87,10 @@ def isDiscrete(g: "Graph") -> bool:
     return len(cols) == len(g.vertices)
 
 
-def isIsomorphic(g_1: "Graph", g_2: "Graph"):
+def isIsomorphic(g_1: "Graph", g_2: "Graph", first: bool = False):
     g = colorIter(colorNeighs(g_1, g_2))
     g_1_cnum = tuple(sorted([v.colornum for v in g.find_vertices(g_1)]))
     g_2_cnum = tuple(sorted([v.colornum for v in g.find_vertices(g_2)]))
-    result = (g_1_cnum == g_2_cnum, isDiscrete(g_1))
-    # if result:
-    #     print('Graph 1 and 2 are INDEED isomorphic')
-    # else:
-    #     print('Graph 1 and 2 are NOT isomorphic')
-    return result
+    if first:
+        return g_1_cnum == g_2_cnum, isDiscrete(g_1)
+    return g_1_cnum == g_2_cnum, False

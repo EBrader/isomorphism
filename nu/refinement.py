@@ -7,7 +7,7 @@ examples = ["colorref_largeexample_4_1026", "colorref_largeexample_6_960", "colo
             "cref9vert3comp_10_27", "cref9vert_4_9"]
 
 # example = ["week4/torus24"]
-example = ["colorref_largeexample_4_1026", "colorref_largeexample_6_960"]
+example = ["colorref_largeexample_6_960"]
 
 final = {}
 results = {}
@@ -27,7 +27,10 @@ def analyse():
             else:
                 check = False
                 for k in results.keys():
-                    isIso = isIsomorphic(g, k[0])
+                    if results.get(g):
+                        isIso = isIsomorphic(g, k[0])
+                    else:
+                        isIso = isIsomorphic(g, k[0], True)
                     if isIso[0]:
                         check = True
                         results[k] = results.get(k) + [g]
@@ -56,5 +59,5 @@ def printResults():
 
 if __name__ == "__main__":
     cProfile.run('analyse()')
-    # analyse()
-    # printResults()
+# analyse()
+# printResults()
