@@ -1,4 +1,4 @@
-from prints import *
+from nu.prints import *
 
 color_num = {}  # set([neighs], str_color)
 color_neighs = {}  # {int, str_color}

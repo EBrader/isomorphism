@@ -1,13 +1,11 @@
-import cProfile
-
-from nu.isomorph import *
+from nu.double.isomorph import *
 
 examples = ["colorref_largeexample_4_1026", "colorref_largeexample_6_960", "colorref_smallexample_2_49",
             "colorref_smallexample_4_7", "colorref_smallexample_4_16", "colorref_smallexample_6_15",
             "cref9vert3comp_10_27", "cref9vert_4_9"]
 
 # example = ["week4/torus24"]
-example = ["colorref_largeexample_6_960"]
+example = ["cref9vert_4_9"]
 
 final = {}
 results = {}
@@ -58,6 +56,6 @@ def printResults():
 
 
 if __name__ == "__main__":
-    cProfile.run('analyse()')
-# analyse()
-# printResults()
+    #   cProfile.run('analyse()')
+    analyse()
+    print(final)

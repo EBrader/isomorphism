@@ -1,4 +1,3 @@
-from nu.nugraph import *
 from nu.nugraph_io import *
 
 

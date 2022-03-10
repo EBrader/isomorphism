@@ -35,7 +35,6 @@ def createComplement(path: str, g: "Graph" = "null") -> "Graph":
         path = "examples/complement"
         G = g
     C = Graph(False)
-    handleGraph(C, createCDict(G))
     with open(f'{path}_C', 'w') as o:
         save_graph(C, o)
     return C
